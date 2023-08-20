@@ -1,0 +1,5 @@
+messages: 
+  start: "Добро пожаловать!\nВыберите пункт меню"
+keyboard: 
+  add_profile: "Добавить профиль"
+  edit_profile: "Редактировать профиль"
