@@ -3,7 +3,7 @@ import logging
 
 
 # from DB_connectors.sqlite_connection import Database
-from DB_connectors.sqlite_connection import Database
+from db.sqlite_connection import Database
 
 from config import load_config
 from keyboards.keyboards import Keyboards

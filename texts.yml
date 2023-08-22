@@ -1,5 +1,5 @@
-messages: 
+messages:
   start: "Добро пожаловать!\nВыберите пункт меню"
-keyboard: 
-  add_profile: "Добавить профиль"
-  edit_profile: "Редактировать профиль"
+keyboard:
+  add_profile: "Выбрать группы для рассылки"
+  edit_profile: "Задать текст рассылки"

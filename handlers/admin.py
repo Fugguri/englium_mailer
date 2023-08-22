@@ -4,7 +4,7 @@ from aiogram.dispatcher.handler import ctx_data
 from aiogram.dispatcher import FSMContext
 
 from config import Config
-from DB_connectors import Database
+from db import Database
 from keyboards.keyboards import Keyboards
 
 async def admin(message: types.Message):

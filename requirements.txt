@@ -1,8 +1,4 @@
 aiogram==2.23.1
-gspread==5.8.0
-openai==0.27.8
-pydub==0.25.1
 PyMySQL==1.0.2
-Pyrogram==2.0.103
 PyYAML==6.0.1
-SpeechRecognition==3.9.0
+Telethon==1.25.0

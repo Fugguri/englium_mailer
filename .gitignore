@@ -1,12 +1,8 @@
 **/__pycache__
-config.json
-todo
 __pycache__
-*.db
-/mailing/*.txt
+config.json
 sessions/*
-mailing_session/*
-*.sessions
-bot.py
 mailing/*
 media/*
+*.db
+Dockerfile
