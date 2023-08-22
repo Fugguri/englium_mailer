@@ -39,7 +39,7 @@ class UserBot:
 
     async def get_chat_id(self, phone_num):
         import tempfile
-        from telethon.client.telegramclient 
+
         temp_contact_name = tempfile.NamedTemporaryFile().name.split('\\')[-1]
         good_res = list()
         async with self.client:
@@ -80,7 +80,7 @@ class UserBot:
                             send.append(rec)
                         else:
                             not_send.append(rec)
-                            
+
                     except Exception as ex:
                         print(ex)
                         not_send.append(rec)
