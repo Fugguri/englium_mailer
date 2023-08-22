@@ -39,17 +39,20 @@ main_text = None
 async def select_group(callback: types.CallbackQuery, callback_data: dict):
     kb: Keyboards = ctx_data.get()['keyboards']
     db: Database = ctx_data.get()['db']
+    global selected_groups
 
     text = "Выберите группы для рассылки\n"
     if callback_data["id"] == "":
         global groups_list
         global all_groups
+        if selected_groups:
+            selected_groups = {}
         groups_list = await user_bot.get_chat_list()
         all_groups = await user_bot.get_chat_list()
-
+        print(selected_groups)
     if callback_data["id"] != "":
-
         text += "Выбраны:\n"
+
         for group in groups_list:
             if str(group[1]) in selected_groups.keys():
                 groups_list.pop(groups_list.index(group))

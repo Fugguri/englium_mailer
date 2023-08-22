@@ -59,7 +59,7 @@ class UserBot:
 
                     counter += 1
                 else:
-                    asyncio.sleep(60)
+                    await asyncio.sleep(60)
                     try:
                         receiver = await self.client.send_message(rec[1], text)
                         send.append(rec)
