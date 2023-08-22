@@ -15,7 +15,7 @@ class UserBot:
             self.phone = data["phone"]
 
         self.client = TelegramClient(
-            "sessions/"+self.phone, self.api_id, self.api_hash)
+            "sessions/"+self.phone, self.api_id, self.api_hash, phone=self.phone)
 
     # async def message(event):
     #     sender = await event.get_sender()
@@ -69,10 +69,3 @@ class UserBot:
                         not_send.append(rec)
                     counter = 0
         return send, not_send
-
-
-if __name__ == "__main__":
-    user_bot = UserBot()
-    members = asyncio.run(user_bot.get_chat_list())
-    print(members)
-    asyncio.run(user_bot.get_members_from_chats(members))
