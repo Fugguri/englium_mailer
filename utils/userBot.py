@@ -34,6 +34,7 @@ class UserBot:
                 for p in participants:
                     print(
                         (p.username, p.id, f"{p.first_name} {p.last_name}", len(participants)))
+                return
             return result
 
     async def get_members_from_chats(self, chats):
