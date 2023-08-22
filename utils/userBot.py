@@ -15,7 +15,7 @@ class UserBot:
             self.phone = data["phone"]
 
         self.client = TelegramClient(
-            "sessions/"+self.phone, self.api_id, self.api_hash, phone=self.phone)
+            "sessions/"+self.phone, self.api_id, self.api_hash)
 
     # async def message(event):
     #     sender = await event.get_sender()
