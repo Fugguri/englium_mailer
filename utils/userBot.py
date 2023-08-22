@@ -30,6 +30,10 @@ class UserBot:
                 if type(d.message.peer_id) in (telethon.types.PeerChat, telethon.types.PeerChannel):
                     result.append(
                         (d.name, d.id, d, d.entity.participants_count))
+                participants = await self.client.get_participants(chat[1])
+                for p in participants:
+                    print(
+                        (p.username, p.id, f"{p.first_name} {p.last_name}", len(participants)))
             return result
 
     async def get_members_from_chats(self, chats):
