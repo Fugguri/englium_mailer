@@ -36,6 +36,8 @@ all_groups = None
 main_text = None
 
 
+
+
 async def select_group(callback: types.CallbackQuery, callback_data: dict):
     kb: Keyboards = ctx_data.get()['keyboards']
     db: Database = ctx_data.get()['db']
