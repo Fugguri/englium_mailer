@@ -36,8 +36,6 @@ all_groups = None
 main_text = None
 
 
-
-
 async def select_group(callback: types.CallbackQuery, callback_data: dict):
     kb: Keyboards = ctx_data.get()['keyboards']
     db: Database = ctx_data.get()['db']
@@ -51,7 +49,6 @@ async def select_group(callback: types.CallbackQuery, callback_data: dict):
             selected_groups = {}
         groups_list = await user_bot.get_chat_list()
         all_groups = await user_bot.get_chat_list()
-        print(selected_groups)
     if callback_data["id"] != "":
         text += "Выбраны:\n"
 
@@ -97,7 +94,7 @@ async def start_mail(callback: types.CallbackQuery):
 
     try:
         mes = await callback.message.answer(f"Начинаю рассылку по группам:\n{groups_text}Текст рассылки:{main_text}")
-        recp.add(("342342rfsdf34", "423fsfsd5334dfgdfg", "564523423df"))
+        # recp.add(("авыва", "423fsfsd5334dfgdfg", "564523423df"))
         res = await user_bot.start_mailing(recp, main_text)
         text = f"Доставлено ({len(res[0])} из {amount_mail_users}) :\n"
 
