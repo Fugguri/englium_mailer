@@ -35,23 +35,23 @@ class UserBot:
 
     async def get_chat_id(self, phone_num):
         import tempfile
-
-        temp_contact_name = tempfile.NamedTemporaryFile().name.split('\\')[-1]
+        import telethon
         good_res = list()
-        async with self.client:
-            self.client.import_contacts(
-                [types.InputPhoneContact(phone=phone_num, first_name=temp_contact_name)])
-            contacts = self.client.get_contacts()
-            for contact in contacts:
-                contact_data = json.loads(str(contact))
-                if contact_data['first_name'] == temp_contact_name:
-                    good_res.append(contact_data)
-                    self.client.delete_contacts(contact_data['id'])
-        try:
-            good_res = good_res[0]['id']
-        except:
-            good_res = None
-        return good_res
+        async with self.client as client:
+            # self.client(telethon.functions.contacts.GetContactsRequest())
+            results = await client(telethon.functions.contacts.GetContactsRequest(
+                hash=-12398745604826
+            ))
+            # print(results.to_dict())
+            for key, values in results.to_dict().items():
+                if key == "users":
+                    for value in values:
+                        print(value["id"], value["first_name"],
+                              "+"+str(value["phone"]), value["username"])
+                        good_res.append(value["id"], value["first_name"],
+                                        "+"+str(value["phone"]), value["username"])
+
+            return good_res
 
     async def get_members_from_chats(self, chats):
         part = set()

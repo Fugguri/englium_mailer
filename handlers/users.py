@@ -138,8 +138,20 @@ async def wait_meil_text(message: types.Message):
     await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}", reply_markup=markup)
 
 
+async def contacts(message: types.Message):
+    contacts = await user_bot.get_chat_id("fdsf")
+    with open("contacts.txt", "w") as file:
+        for r in contacts:
+            file.write(f"{r}")
+
+    with open("contacts.txt", "rb") as file:
+        await message.answer_document(file)
+    os.system("rm contacts.txt")
+
+
 def register_user_handlers(dp: Dispatcher, cfg: Config, kb: Keyboards, db: Database):
     dp.register_message_handler(start, commands=["start"], state="*")
+    dp.register_message_handler(start, commands=["contacts"], state="*")
     dp.register_callback_query_handler(start, kb.back_cd.filter(), state="*")
 
     dp.register_callback_query_handler(
