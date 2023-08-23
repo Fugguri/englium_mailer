@@ -46,10 +46,10 @@ class UserBot:
             for key, values in results.to_dict().items():
                 if key == "users":
                     for value in values:
-                        print(value["id"], value["first_name"],
-                              "+"+str(value["phone"]), value["username"])
-                        good_res.append(value["id"], value["first_name"],
-                                        "+"+str(value["phone"]), value["username"])
+                        # print(value["id"], value["first_name"],
+                        #       "+"+str(value["phone"]), value["username"])
+                        good_res.append((value["id"], value["first_name"],
+                                        "+"+str(value["phone"]), value["username"]))
 
             return good_res
 
