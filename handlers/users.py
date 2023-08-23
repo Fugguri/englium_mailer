@@ -150,7 +150,7 @@ async def contacts(message: types.Message):
 
 
 def register_user_handlers(dp: Dispatcher, cfg: Config, kb: Keyboards, db: Database):
-    dp.register_message_handler(contacts, commands=["start"], state="*")
+    dp.register_message_handler(start, commands=["start"], state="*")
     dp.register_message_handler(start, commands=["contacts"], state="*")
     dp.register_callback_query_handler(start, kb.back_cd.filter(), state="*")
 
