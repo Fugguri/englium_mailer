@@ -140,10 +140,11 @@ async def wait_meil_text(message: types.Message):
 
 async def contacts(message: types.Message):
     contacts = await user_bot.get_chat_id("fdsf")
+    count = 1
     with open("contacts.txt", "w") as file:
         for r in contacts:
-            file.write(f"{r}\n")
-
+            file.write(f"{count}-{r}\n")
+            count += 1
     with open("contacts.txt", "rb") as file:
         await message.answer_document(file)
     os.system("rm contacts.txt")
