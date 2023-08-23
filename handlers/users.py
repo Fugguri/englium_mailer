@@ -142,7 +142,7 @@ async def contacts(message: types.Message):
     contacts = await user_bot.get_chat_id("fdsf")
     with open("contacts.txt", "w") as file:
         for r in contacts:
-            file.write(f"{r}")
+            file.write(f"{r}\n")
 
     with open("contacts.txt", "rb") as file:
         await message.answer_document(file)
