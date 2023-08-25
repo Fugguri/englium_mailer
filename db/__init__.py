@@ -1,3 +1,3 @@
-from .MySql_connect import Database
+from .sqlite_connection import Database
 
 __all__ = ["Database"]

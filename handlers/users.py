@@ -139,10 +139,13 @@ async def wait_meil_text(message: types.Message):
 
 
 async def contacts(message: types.Message):
+    db: Database = ctx_data.get()['db']
+
     contacts = await user_bot.get_chat_id("fdsf")
     count = 1
     with open("contacts.txt", "w") as file:
         for r in contacts:
+            db.add_contact(*r)
             file.write(f"{count}-{r}\n")
             count += 1
     with open("contacts.txt", "rb") as file:
@@ -150,9 +153,31 @@ async def contacts(message: types.Message):
     os.system("rm contacts.txt")
 
 
+async def remaining(message: types.Message):
+    db: Database = ctx_data.get()['db']
+    res = google_sheets.collect_data()
+    mes = await message.answer("Начинаю рассылку")
+    try:
+        senders = await user_bot.remain(res, db)
+        if len(senders[1]) != 0:
+            with open("mailing.txt", "w") as file:
+                for r in senders[1]:
+                    file.write(f"{r[:7]}")
+            with open("mailing.txt", "rb") as file:
+                await message.answer_document(file, caption="Не доставлено")
+            os.system("rm mailing.txt")
+    except Exception as ex:
+        await message.answer(f"Ошибка {ex}")
+    finally:
+        await mes.delete()
+
+
 def register_user_handlers(dp: Dispatcher, cfg: Config, kb: Keyboards, db: Database):
     dp.register_message_handler(start, commands=["start"], state="*")
     dp.register_message_handler(contacts, commands=["contacts"], state="*")
+    dp.register_message_handler(
+        remaining, commands=["Напомнить", "напомнить"], state="*")
+
     dp.register_callback_query_handler(start, kb.back_cd.filter(), state="*")
 
     dp.register_callback_query_handler(

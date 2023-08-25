@@ -46,10 +46,14 @@ class UserBot:
             for key, values in results.to_dict().items():
                 if key == "users":
                     for value in values:
-                        # print(value["id"], value["first_name"],
-                        #       "+"+str(value["phone"]), value["username"])
-                        good_res.append((value["id"], value["first_name"],
-                                        "+"+str(value["phone"]), value["username"]))
+                        if value['phone'] != None:
+                            id = value["id"]
+                            first_name = value["first_name"]
+                            phone = f"8{value['phone'][1:]}"
+
+                            username = value["username"]
+                            data = (id, first_name, phone, username)
+                            good_res.append(data)
 
             return good_res
 
@@ -87,6 +91,44 @@ class UserBot:
                     try:
                         if rec[1] not in self.teachers:
                             await self.client.send_message(rec[1], text)
+                            send.append(rec)
+                        else:
+                            not_send.append(rec)
+
+                    except Exception as ex:
+                        print(ex)
+                        not_send.append(rec)
+                    counter = 0
+        return send, not_send
+
+    async def remain(self, recepients, db):
+        print(1)
+        text = "Напоминание об оплате"
+        counter = 0
+        send = []
+        not_send = []
+        async with self.client:
+            for rec in recepients:
+                user_id = db.get_user_id_by_phone(rec[3])
+                if counter <= 10:
+                    try:
+                        print(user_id, rec[3], rec[4])
+                        if user_id != None:
+                            await self.client.send_message(user_id[0], text)
+                            print()
+                            send.append(rec)
+                        else:
+                            not_send.append(rec)
+
+                    except Exception as ex:
+                        not_send.append(rec)
+
+                    counter += 1
+                else:
+                    await asyncio.sleep(60)
+                    try:
+                        if user_id != None:
+                            await self.client.send_message(user_id, text)
                             send.append(rec)
                         else:
                             not_send.append(rec)
