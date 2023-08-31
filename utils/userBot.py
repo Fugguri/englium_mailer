@@ -101,9 +101,7 @@ class UserBot:
                     counter = 0
         return send, not_send
 
-    async def remain(self, recepients, db):
-        print(1)
-        text = "Напоминание об оплате"
+    async def remain(self, recepients, db, text):
         counter = 0
         send = []
         not_send = []

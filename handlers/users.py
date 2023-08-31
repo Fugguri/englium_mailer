@@ -72,11 +72,11 @@ async def start_mail(callback: types.CallbackQuery):
     kb: Keyboards = ctx_data.get()['keyboards']
     markup = await kb.start_kb()
     global selected_groups
-    global main_text
 
     if not selected_groups:
         await callback.message.edit_text("Сначала выберите группы для рассылки", reply_markup=markup)
         return
+    global main_text
     if not main_text:
         await callback.message.edit_text("Сначала введите текст рассылки", reply_markup=markup)
         return
@@ -160,10 +160,17 @@ async def contacts(callback: types.CallbackQuery):
 
 async def remaining(callback: types.CallbackQuery):
     db: Database = ctx_data.get()['db']
+    kb: Keyboards = ctx_data.get()['keyboards']
     res = google_sheets.collect_data()
+    global main_text
+    if not main_text:
+        markup = await kb.start_kb()
+        await callback.message.edit_text("Сначала введите текст рассылки", reply_markup=markup)
+        return
+
     mes = await callback.message.answer("Начинаю рассылку")
     try:
-        senders = await user_bot.remain(res, db)
+        senders = await user_bot.remain(res, db, main_text)
         if len(senders[1]) != 0:
             with open("mailing.txt", "w") as file:
                 for r in senders[1]:
