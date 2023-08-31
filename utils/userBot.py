@@ -108,10 +108,11 @@ class UserBot:
         async with self.client:
             for rec in recepients:
                 user_id = db.get_user_id_by_phone(rec[3])
+
                 if counter <= 10:
                     try:
                         print(user_id, rec[3], rec[4])
-                        if user_id != None:
+                        if user_id not in (None, [], ()):
                             await self.client.send_message(user_id[0], text)
                             print()
                             send.append(rec)
@@ -125,7 +126,7 @@ class UserBot:
                 else:
                     await asyncio.sleep(60)
                     try:
-                        if user_id != None:
+                        if user_id not in (None, [], ()):
                             await self.client.send_message(user_id, text)
                             send.append(rec)
                         else:

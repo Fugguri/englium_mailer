@@ -25,7 +25,16 @@ class GoogleSheest():
         result = []
         cells = worksheet.get_values()
         for cell in cells:
-            if cell[4].lower() == "да":
+            print(cell)
+            if cell[6].lower() == "да":
                 result.append(cell)
-
         return result
+
+
+gs = GoogleSheest()
+data = gs.collect_data()
+
+# c = 0
+# while c != 10:
+#     print(data[c])
+#     c += 1
