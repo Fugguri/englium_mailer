@@ -162,11 +162,13 @@ async def remaining(callback: types.CallbackQuery):
     db: Database = ctx_data.get()['db']
     kb: Keyboards = ctx_data.get()['keyboards']
     res = google_sheets.collect_data()
-    print(res)
-    return
+    markup = await kb.start_kb()
     global main_text
+    if res == []:
+        await callback.message.edit_text("Нет отмеченных для рассылки контактов", reply_markup=markup)
+        main_text = None
+        return
     if not main_text:
-        markup = await kb.start_kb()
         await callback.message.edit_text("Сначала введите текст рассылки", reply_markup=markup)
         return
 
