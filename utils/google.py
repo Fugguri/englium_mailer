@@ -24,18 +24,10 @@ class GoogleSheest():
         worksheet = self.sh.get_worksheet(0)
         result = []
         cells = worksheet.get_values()
+
         for cell in cells:
-            print(cell)
+
             if cell[6].lower() == "да":
                 result.append(cell)
-            return
+
         return result
-
-
-gs = GoogleSheest()
-data = gs.collect_data()
-
-# c = 0
-# while c != 10:
-#     print(data[c])
-#     c += 1

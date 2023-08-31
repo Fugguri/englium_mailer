@@ -162,6 +162,8 @@ async def remaining(callback: types.CallbackQuery):
     db: Database = ctx_data.get()['db']
     kb: Keyboards = ctx_data.get()['keyboards']
     res = google_sheets.collect_data()
+    print(res)
+    return
     global main_text
     if not main_text:
         markup = await kb.start_kb()
