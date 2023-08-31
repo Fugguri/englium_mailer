@@ -181,6 +181,7 @@ async def remaining(callback: types.CallbackQuery):
     except Exception as ex:
         await callback.message.answer(f"Ошибка {ex}")
     finally:
+        main_text = None
         await mes.delete()
 
 
