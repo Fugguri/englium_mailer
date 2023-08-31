@@ -138,25 +138,30 @@ async def wait_meil_text(message: types.Message):
     await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}", reply_markup=markup)
 
 
-async def contacts(message: types.Message):
+async def contacts(callback: types.CallbackQuery):
     db: Database = ctx_data.get()['db']
+    mes = await callback.message.answer("Начинаю обновление")
+    try:
+        contacts = await user_bot.get_chat_id("fdsf")
+        count = 1
+        with open("contacts.txt", "w") as file:
+            for r in contacts:
+                db.add_contact(*r)
+                file.write(f"{count}-{r}\n")
+                count += 1
+        with open("contacts.txt", "rb") as file:
+            await callback.message.answer_document(file)
+        os.system("rm contacts.txt")
+    except Exception as ex:
+        await callback.message.answer(f"Ошибка {ex}")
+    finally:
+        await mes.delete()
 
-    contacts = await user_bot.get_chat_id("fdsf")
-    count = 1
-    with open("contacts.txt", "w") as file:
-        for r in contacts:
-            db.add_contact(*r)
-            file.write(f"{count}-{r}\n")
-            count += 1
-    with open("contacts.txt", "rb") as file:
-        await message.answer_document(file)
-    os.system("rm contacts.txt")
 
-
-async def remaining(message: types.Message):
+async def remaining(callback: types.CallbackQuery):
     db: Database = ctx_data.get()['db']
     res = google_sheets.collect_data()
-    mes = await message.answer("Начинаю рассылку")
+    mes = await callback.message.answer("Начинаю рассылку")
     try:
         senders = await user_bot.remain(res, db)
         if len(senders[1]) != 0:
@@ -164,19 +169,20 @@ async def remaining(message: types.Message):
                 for r in senders[1]:
                     file.write(f"{r[:7]}")
             with open("mailing.txt", "rb") as file:
-                await message.answer_document(file, caption="Не доставлено")
+                await callback.message.answer_document(file, caption="Не доставлено")
             os.system("rm mailing.txt")
     except Exception as ex:
-        await message.answer(f"Ошибка {ex}")
+        await callback.message.answer(f"Ошибка {ex}")
     finally:
         await mes.delete()
 
 
 def register_user_handlers(dp: Dispatcher, cfg: Config, kb: Keyboards, db: Database):
     dp.register_message_handler(start, commands=["start"], state="*")
-    dp.register_message_handler(contacts, commands=["contacts"], state="*")
-    dp.register_message_handler(
-        remaining, commands=["Напомнить", "напомнить"], state="*")
+    dp.register_callback_query_handler(
+        contacts, lambda c: c.data == "contacts", state="*")
+    dp.register_callback_query_handler(
+        remaining, lambda c: c.data == "remainder", state="*")
 
     dp.register_callback_query_handler(start, kb.back_cd.filter(), state="*")
 

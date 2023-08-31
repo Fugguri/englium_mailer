@@ -22,7 +22,11 @@ class Keyboards:
                callback_data=self.select_group.new(id="")))
         kb.add(InlineKeyboardButton(text=edit_profile, callback_data="mail_text"))
         kb.add(InlineKeyboardButton(
-            text="Начать рассылку", callback_data="start"))
+            text="Начать рассылку(из групп)", callback_data="start"))
+        kb.add(InlineKeyboardButton(
+            text="Обновить контакты", callback_data="contacts"))
+        kb.add(InlineKeyboardButton(
+            text="Начать рассылку(гугл таблицы)", callback_data="remainder"))
 
         return kb
 
