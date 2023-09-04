@@ -1,7 +1,6 @@
 import json
 import asyncio
 from telethon import TelegramClient, events, types
-
 import telethon
 
 
@@ -116,22 +115,24 @@ class UserBot:
 
                 if counter <= 10:
                     try:
-                        if rec[1] not in self.teachers:
-                            await self.client.send_message(user_id, text)
+                        print(user_id, rec[3], rec[4])
+                        if user_id not in (None, [], ()):
+                            await self.client.send_message(user_id[0], text)
+                            print()
                             send.append(rec)
                         else:
                             not_send.append(rec)
 
                     except Exception as ex:
-                        print(ex)
                         not_send.append(rec)
+
                     finally:
                         counter += 1
                         await asyncio.sleep(10)
                 else:
                     await asyncio.sleep(60)
                     try:
-                        if rec[1] not in self.teachers:
+                        if user_id not in (None, [], ()):
                             await self.client.send_message(user_id, text)
                             send.append(rec)
                         else:
