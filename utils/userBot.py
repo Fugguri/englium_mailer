@@ -117,7 +117,7 @@ class UserBot:
                 if counter <= 10:
                     try:
                         if rec[1] not in self.teachers:
-                            await self.client.send_message(rec[1], text)
+                            await self.client.send_message(user_id, text)
                             send.append(rec)
                         else:
                             not_send.append(rec)
@@ -132,7 +132,7 @@ class UserBot:
                     await asyncio.sleep(60)
                     try:
                         if rec[1] not in self.teachers:
-                            await self.client.send_message(rec[1], text)
+                            await self.client.send_message(user_id, text)
                             send.append(rec)
                         else:
                             not_send.append(rec)
