@@ -116,23 +116,8 @@ class UserBot:
 
                 if counter <= 10:
                     try:
-                        print(user_id, rec[3], rec[4])
-                        if user_id not in (None, [], ()):
-                            await self.client.send_message(user_id[0], text)
-                            print()
-                            send.append(rec)
-                        else:
-                            not_send.append(rec)
-
-                    except Exception as ex:
-                        not_send.append(rec)
-
-                    counter += 1
-                else:
-                    await asyncio.sleep(60)
-                    try:
-                        if user_id not in (None, [], ()):
-                            await self.client.send_message(user_id, text)
+                        if rec[1] not in self.teachers:
+                            await self.client.send_message(rec[1], text)
                             send.append(rec)
                         else:
                             not_send.append(rec)
@@ -140,7 +125,24 @@ class UserBot:
                     except Exception as ex:
                         print(ex)
                         not_send.append(rec)
-                    counter = 0
+                    finally:
+                        counter += 1
+                        await asyncio.sleep(10)
+                else:
+                    await asyncio.sleep(60)
+                    try:
+                        if rec[1] not in self.teachers:
+                            await self.client.send_message(rec[1], text)
+                            send.append(rec)
+                        else:
+                            not_send.append(rec)
+
+                    except Exception as ex:
+                        print(ex)
+                        not_send.append(rec)
+                    finally:
+                        counter = 0
+                        await asyncio.sleep(10)
         return send, not_send
 
 
