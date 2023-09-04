@@ -1,7 +1,7 @@
 import json
 import asyncio
 from telethon import TelegramClient, events, types
-import socks
+
 import telethon
 
 
