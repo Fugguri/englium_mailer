@@ -1,7 +1,7 @@
 import json
 import asyncio
 from telethon import TelegramClient, events, types
-
+import socks
 import telethon
 
 
@@ -16,6 +16,8 @@ class UserBot:
             self.teachers = data["teachers_list"]
         self.client = TelegramClient(
             "sessions/"+self.phone, self.api_id, self.api_hash)
+        # self.client.set_proxy(
+        #     (socks.HTTP, '45.92.171.19', 8000, 'dGC5o8', 'zcf7tx'))
 
     # async def message(event):
     #     sender = await event.get_sender()
@@ -84,8 +86,9 @@ class UserBot:
                     except Exception as ex:
                         print(ex)
                         not_send.append(rec)
-
-                    counter += 1
+                    finally:
+                        counter += 1
+                        await asyncio.sleep(10)
                 else:
                     await asyncio.sleep(60)
                     try:
@@ -98,7 +101,9 @@ class UserBot:
                     except Exception as ex:
                         print(ex)
                         not_send.append(rec)
-                    counter = 0
+                    finally:
+                        counter = 0
+                        await asyncio.sleep(10)
         return send, not_send
 
     async def remain(self, recepients, db, text):

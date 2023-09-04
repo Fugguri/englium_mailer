@@ -11,6 +11,7 @@ from handlers.users import register_user_handlers
 from handlers.admin import register_admin_handlers
 from handlers.users import user_active_clients
 
+from utils.userBot import UserBot
 from middlewares.environment import EnvironmentMiddleware
 
 from aiogram import Bot, Dispatcher, executor
@@ -19,10 +20,10 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 logger = logging.getLogger(__name__)
 
 
-async def register_all_middlewares(dp, config, keyboards, db):
+async def register_all_middlewares(dp, config, keyboards, db, user_bot):
 
     dp.middleware.setup(EnvironmentMiddleware(
-        config=config, db=db, keyboards=keyboards))
+        config=config, db=db, keyboards=keyboards, user_bot=user_bot))
 
 
 def register_all_handlers(dp, config, keyboards, db):
@@ -45,10 +46,10 @@ async def main():
     # db = Database(cfg=config)
     dp = Dispatcher(bot, storage=storage)
     kbs = Keyboards(config)
-
+    user_bot = UserBot()
     bot['keyboards'] = kbs
     bot['config'] = config
-    await register_all_middlewares(dp, config, kbs, db)
+    await register_all_middlewares(dp, config, kbs, db, user_bot)
     register_all_handlers(dp, config, kbs, db)
 
     dp.skip_updates = False

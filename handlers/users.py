@@ -1,4 +1,3 @@
-from utils import user_bot
 from aiogram import types
 from aiogram import Dispatcher
 from aiogram.dispatcher.handler import ctx_data
@@ -39,6 +38,7 @@ main_text = None
 async def select_group(callback: types.CallbackQuery, callback_data: dict):
     kb: Keyboards = ctx_data.get()['keyboards']
     db: Database = ctx_data.get()['db']
+    userbot = ctx_data.get()['user_bot']
     global selected_groups
 
     text = "Выберите группы для рассылки\n"
@@ -47,8 +47,11 @@ async def select_group(callback: types.CallbackQuery, callback_data: dict):
         global all_groups
         if selected_groups:
             selected_groups = {}
-        groups_list = await user_bot.get_chat_list()
-        all_groups = await user_bot.get_chat_list()
+        print(1)
+
+        groups_list = await userbot.get_chat_list()
+        print(groups_list)
+        all_groups = await userbot.get_chat_list()
     if callback_data["id"] != "":
         text += "Выбраны:\n"
 
@@ -71,6 +74,7 @@ async def select_group(callback: types.CallbackQuery, callback_data: dict):
 async def start_mail(callback: types.CallbackQuery):
     kb: Keyboards = ctx_data.get()['keyboards']
     markup = await kb.start_kb()
+    user_bot = ctx_data.get()['user_bot']
     global selected_groups
 
     if not selected_groups:
@@ -140,6 +144,8 @@ async def wait_meil_text(message: types.Message):
 
 async def contacts(callback: types.CallbackQuery):
     db: Database = ctx_data.get()['db']
+    user_bot = ctx_data.get()['user_bot']
+
     mes = await callback.message.answer("Начинаю обновление")
     try:
         contacts = await user_bot.get_chat_id("fdsf")
@@ -161,6 +167,8 @@ async def contacts(callback: types.CallbackQuery):
 async def remaining(callback: types.CallbackQuery):
     db: Database = ctx_data.get()['db']
     kb: Keyboards = ctx_data.get()['keyboards']
+    user_bot = ctx_data.get()['user_bot']
+
     res = google_sheets.collect_data()
     markup = await kb.start_kb()
     global main_text
