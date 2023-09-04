@@ -74,35 +74,34 @@ class UserBot:
         not_send = []
         async with self.client:
             for rec in recepients:
-                if counter <= 10:
-                    try:
-                        if rec[1] not in self.teachers:
-                            await self.client.send_message(rec[1], text)
-                            send.append(rec)
-                        else:
-                            not_send.append(rec)
-
-                    except Exception as ex:
-                        print(ex)
+                try:
+                    if rec[1] not in self.teachers:
+                        await self.client.send_message(rec[1], text)
+                        send.append(rec)
+                    else:
                         not_send.append(rec)
-                    finally:
-                        counter += 1
-                        await asyncio.sleep(10)
-                else:
-                    await asyncio.sleep(60)
-                    try:
-                        if rec[1] not in self.teachers:
-                            await self.client.send_message(rec[1], text)
-                            send.append(rec)
-                        else:
-                            not_send.append(rec)
+                except Exception as ex:
+                    print(ex)
+                    not_send.append(rec)
+                finally:
+                    counter += 1
+                    await asyncio.sleep(10)
+                # if counter <= 10:
+                # else:
+                #     await asyncio.sleep(60)
+                #     try:
+                #         if rec[1] not in self.teachers:
+                #             await self.client.send_message(rec[1], text)
+                #             send.append(rec)
+                #         else:
+                #             not_send.append(rec)
 
-                    except Exception as ex:
-                        print(ex)
-                        not_send.append(rec)
-                    finally:
-                        counter = 0
-                        await asyncio.sleep(10)
+                #     except Exception as ex:
+                #         print(ex)
+                #         not_send.append(rec)
+                #     finally:
+                #         counter = 0
+                #         await asyncio.sleep(10)
         return send, not_send
 
     async def remain(self, recepients, db, text):
@@ -112,38 +111,35 @@ class UserBot:
         async with self.client:
             for rec in recepients:
                 user_id = db.get_user_id_by_phone(rec[3])
-
-                if counter <= 10:
-                    try:
-                        print(user_id, rec[3], rec[4])
-                        if user_id not in (None, [], ()):
-                            await self.client.send_message(user_id[0], text)
-                            print()
-                            send.append(rec)
-                        else:
-                            not_send.append(rec)
-
-                    except Exception as ex:
+                try:
+                    print(user_id, rec[3], rec[4])
+                    if user_id not in (None, [], ()):
+                        await self.client.send_message(user_id[0], text)
+                        print()
+                        send.append(rec)
+                    else:
                         not_send.append(rec)
+                except Exception as ex:
+                    not_send.append(rec)
+                finally:
+                    counter += 1
+                    await asyncio.sleep(200)
+                # if counter <= 10:
+                # else:
+                #     await asyncio.sleep(60)
+                #     try:
+                #         if user_id not in (None, [], ()):
+                #             await self.client.send_message(user_id, text)
+                #             send.append(rec)
+                #         else:
+                #             not_send.append(rec)
 
-                    finally:
-                        counter += 1
-                        await asyncio.sleep(10)
-                else:
-                    await asyncio.sleep(60)
-                    try:
-                        if user_id not in (None, [], ()):
-                            await self.client.send_message(user_id, text)
-                            send.append(rec)
-                        else:
-                            not_send.append(rec)
-
-                    except Exception as ex:
-                        print(ex)
-                        not_send.append(rec)
-                    finally:
-                        counter = 0
-                        await asyncio.sleep(10)
+                #     except Exception as ex:
+                #         print(ex)
+                #         not_send.append(rec)
+                #     finally:
+                #         counter = 0
+                #         await asyncio.sleep(10)
         return send, not_send
 
 
