@@ -116,6 +116,7 @@ class UserBot:
                     else:
                         not_send.append(rec)
                 except Exception as ex:
+                    print(ex)
                     not_send.append(rec)
                 finally:
                     counter += 1
