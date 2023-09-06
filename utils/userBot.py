@@ -78,6 +78,19 @@ class UserBot:
                     if rec[1] not in self.teachers:
                         await self.client.send_message(rec[1], text)
                         send.append(rec)
+                except telethon.errors.FloodWaitError as ex:
+                    await asyncio.sleep(ex.value)
+                    try:
+                        if rec[1] not in self.teachers:
+                            await self.client.send_message(rec[1], text)
+                            send.append(rec)
+                    except telethon.errors.FloodWaitError as ex:
+                        await asyncio.sleep(20)
+
+                    except Exception as ex:
+                        print(ex)
+                        not_send.append(rec)
+
                 except Exception as ex:
                     print(ex)
                     not_send.append(rec)
