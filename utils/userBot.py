@@ -78,14 +78,12 @@ class UserBot:
                     if rec[1] not in self.teachers:
                         await self.client.send_message(rec[1], text)
                         send.append(rec)
-                    else:
-                        not_send.append(rec)
                 except Exception as ex:
                     print(ex)
                     not_send.append(rec)
                 finally:
                     counter += 1
-                    await asyncio.sleep(10)
+                    await asyncio.sleep(200)
                 # if counter <= 10:
                 # else:
                 #     await asyncio.sleep(60)
@@ -112,10 +110,8 @@ class UserBot:
             for rec in recepients:
                 user_id = db.get_user_id_by_phone(rec[3])
                 try:
-                    print(user_id, rec[3], rec[4])
                     if user_id not in (None, [], ()):
                         await self.client.send_message(user_id[0], text)
-                        print()
                         send.append(rec)
                     else:
                         not_send.append(rec)

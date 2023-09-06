@@ -7,7 +7,7 @@ from utils import *
 from config import Config
 from db import Database
 from keyboards.keyboards import Keyboards
-
+from utils.userBot import UserBot
 import os
 client_data = {}
 user_active_clients = {}
@@ -74,7 +74,7 @@ async def select_group(callback: types.CallbackQuery, callback_data: dict):
 async def start_mail(callback: types.CallbackQuery):
     kb: Keyboards = ctx_data.get()['keyboards']
     markup = await kb.start_kb()
-    user_bot = ctx_data.get()['user_bot']
+    user_bot: UserBot = ctx_data.get()['user_bot']
     global selected_groups
 
     if not selected_groups:
@@ -98,22 +98,18 @@ async def start_mail(callback: types.CallbackQuery):
 
     try:
         mes = await callback.message.answer(f"Начинаю рассылку по группам:\n{groups_text}Текст рассылки:{main_text}")
-        # recp.add(("авыва", "423fsfsd5334dfgdfg", "564523423df"))
         res = await user_bot.start_mailing(recp, main_text)
-        text = f"Доставлено ({len(res[0])} из {amount_mail_users}) :\n"
-
-        for r in res[0]:
-            text += f"{r[0]} {r[2]}\n"
-        await callback.message.answer(text, reply_markup=markup)
+        text = f"Не доставлено ({len(res[0])} из {amount_mail_users}) :\n"
         if len(res[1]) != 0:
             with open("mailing.txt", "w") as file:
                 for r in res[1]:
                     file.write(f"{r}")
 
             with open("mailing.txt", "rb") as file:
-                await callback.message.answer_document(file)
+                await callback.message.answer_document(file, caption=text)
             os.system("rm mailing.txt")
-
+        else:
+            await callback.message.answer("Все сообщения доставлены")
     except Exception as ex:
         await callback.message.answer(f"Ошибка {ex} \nОбратитесь к администратору", reply_markup=markup)
     finally:
@@ -144,7 +140,7 @@ async def wait_meil_text(message: types.Message):
 
 async def contacts(callback: types.CallbackQuery):
     db: Database = ctx_data.get()['db']
-    user_bot = ctx_data.get()['user_bot']
+    user_bot: UserBot = ctx_data.get()['user_bot']
 
     mes = await callback.message.answer("Начинаю обновление")
     try:
@@ -167,7 +163,7 @@ async def contacts(callback: types.CallbackQuery):
 async def remaining(callback: types.CallbackQuery):
     db: Database = ctx_data.get()['db']
     kb: Keyboards = ctx_data.get()['keyboards']
-    user_bot = ctx_data.get()['user_bot']
+    user_bot: UserBot = ctx_data.get()['user_bot']
 
     res = google_sheets.collect_data()
     markup = await kb.start_kb()
