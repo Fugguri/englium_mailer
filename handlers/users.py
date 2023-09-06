@@ -109,7 +109,7 @@ async def start_mail(callback: types.CallbackQuery):
                 await callback.message.answer_document(file, caption=text)
             os.system("rm mailing.txt")
         else:
-            await callback.message.answer("Все сообщения доставлены")
+            await callback.message.answer(f"Доставлено ({len(res[0])} из {amount_mail_users}) :\n")
     except Exception as ex:
         await callback.message.answer(f"Ошибка {ex} \nОбратитесь к администратору", reply_markup=markup)
     finally:
