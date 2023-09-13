@@ -100,7 +100,7 @@ async def start_mail(callback: types.CallbackQuery):
         mes = await callback.message.answer(f"Начинаю рассылку по группам:\n{groups_text}Текст рассылки:{main_text}")
         res = await user_bot.start_mailing(recp, main_text)
         text = f"Не доставлено ({len(res[0])} из {amount_mail_users}) :\n"
-        
+
         if len(res[1]) != 0:
             with open("mailing.txt", "w") as file:
                 for r in res[1]:
@@ -110,7 +110,6 @@ async def start_mail(callback: types.CallbackQuery):
                 await callback.message.answer_document(file, caption=text)
             os.system("rm mailing.txt")
         else:
-            
             await callback.message.answer(f"Доставлено ({len(res[0])} из {amount_mail_users})\nГруппы для рассылки:\n{groups_text}")
     except Exception as ex:
         await callback.message.answer(f"Ошибка {ex} \nОбратитесь к администратору", reply_markup=markup)
@@ -177,7 +176,7 @@ async def remaining(callback: types.CallbackQuery):
     if not main_text:
         await callback.message.edit_text("Сначала введите текст рассылки", reply_markup=markup)
         return
-
+    amount_mail_users = len(res)
     mes = await callback.message.answer("Начинаю рассылку")
     try:
         senders = await user_bot.remain(res, db, main_text)
@@ -188,6 +187,7 @@ async def remaining(callback: types.CallbackQuery):
             with open("mailing.txt", "rb") as file:
                 await callback.message.answer_document(file, caption="Не доставлено")
             os.system("rm mailing.txt")
+        await callback.message.answer(f"Доставлено ({len(res[0])} из {amount_mail_users})\n")
     except Exception as ex:
         await callback.message.answer(f"Ошибка {ex}")
     finally:
