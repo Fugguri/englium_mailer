@@ -15,8 +15,8 @@ class UserBot:
             self.teachers = data["teachers_list"]
         self.client = TelegramClient(
             "sessions/"+self.phone, self.api_id, self.api_hash)
-        self.client.set_proxy(
-            (socks.HTTP, '45.92.171.19', 8000, 'dGC5o8', 'zcf7tx'))
+        # self.client.set_proxy(
+        #     (socks.HTTP, '45.92.171.19', 8000, 'dGC5o8', 'zcf7tx'))
 
     # async def message(event):
     #     sender = await event.get_sender()

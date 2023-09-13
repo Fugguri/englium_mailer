@@ -181,11 +181,14 @@ async def remaining(callback: types.CallbackQuery):
     try:
         senders = await user_bot.remain(res, db, main_text)
         if len(senders[1]) != 0:
+            not_send_text = ""
             with open("mailing.txt", "w") as file:
                 for r in senders[1]:
                     file.write(f"{r[:7]}")
+                    not_send_text += str(r)+"\n"
             with open("mailing.txt", "rb") as file:
-                await callback.message.answer_document(file, caption="Не доставлено")
+
+                await callback.message.answer_document(file, caption="Не доставлено\n"+not_send_text)
             os.system("rm mailing.txt")
         await callback.message.answer(f"Доставлено ({len(res[0])} из {amount_mail_users})\n")
     except Exception as ex:
