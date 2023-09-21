@@ -47,10 +47,7 @@ async def select_group(callback: types.CallbackQuery, callback_data: dict):
         global all_groups
         if selected_groups:
             selected_groups = {}
-        print(1)
-
         groups_list = await userbot.get_chat_list()
-        print(groups_list)
         all_groups = await userbot.get_chat_list()
     if callback_data["id"] != "":
         text += "Выбраны:\n"
@@ -97,6 +94,7 @@ async def start_mail(callback: types.CallbackQuery):
         counter += 1
 
     try:
+        user_bot.stop_mailing = False
         mes = await callback.message.answer(f"Начинаю рассылку по группам:\n{groups_text}Текст рассылки:{main_text}")
         res = await user_bot.start_mailing(recp, main_text)
         text = f"Не доставлено ({len(res[0])} из {amount_mail_users}) :\n"
@@ -161,6 +159,25 @@ async def contacts(callback: types.CallbackQuery):
         await mes.delete()
 
 
+async def stop(callback: types.CallbackQuery):
+    db: Database = ctx_data.get()['db']
+    kb: Keyboards = ctx_data.get()['keyboards']
+    user_bot: UserBot = ctx_data.get()['user_bot']
+
+    mes = await callback.message.answer("Останавливаю")
+
+    try:
+        user_bot.stop_mailing = True
+        user_bot.stop_remaining = True
+
+    except Exception as ex:
+        await callback.message.answer(f"Ошибка {ex}")
+
+    finally:
+        await mes.delete()
+        await callback.message.answer("Остановил",)
+
+
 async def remaining(callback: types.CallbackQuery):
     db: Database = ctx_data.get()['db']
     kb: Keyboards = ctx_data.get()['keyboards']
@@ -179,6 +196,7 @@ async def remaining(callback: types.CallbackQuery):
     amount_mail_users = len(res)
     mes = await callback.message.answer("Начинаю рассылку")
     try:
+        user_bot.stop_remaining = False
         senders = await user_bot.remain(res, db, main_text)
         if len(senders[1]) != 0:
             not_send_text = ""
@@ -187,7 +205,6 @@ async def remaining(callback: types.CallbackQuery):
                     file.write(f"{r[:7]}")
                     not_send_text += str(r)+"\n"
             with open("mailing.txt", "rb") as file:
-
                 await callback.message.answer_document(file, caption="Не доставлено\n"+not_send_text)
             os.system("rm mailing.txt")
         await callback.message.answer(f"Доставлено ({len(res[0])} из {amount_mail_users})\n")
@@ -211,6 +228,8 @@ def register_user_handlers(dp: Dispatcher, cfg: Config, kb: Keyboards, db: Datab
         select_group, kb.select_group.filter(), state="*")
     dp.register_callback_query_handler(
         start_mail, lambda c: c.data == "start", state="*")
+    dp.register_callback_query_handler(
+        stop, lambda c: c.data == "stop", state="*")
     dp.register_callback_query_handler(
         mail_text, lambda c: c.data == "mail_text", state="*")
     dp.register_message_handler(wait_meil_text, state="wait_mail_text")

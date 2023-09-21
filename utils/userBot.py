@@ -15,6 +15,8 @@ class UserBot:
             self.teachers = data["teachers_list"]
         self.client = TelegramClient(
             "sessions/"+self.phone, self.api_id, self.api_hash)
+        self.stop_mailing = False
+        self.stop_remaining = False
         # self.client.set_proxy(
         #     (socks.HTTP, '45.92.171.19', 8000, 'dGC5o8', 'zcf7tx'))
 
@@ -74,6 +76,9 @@ class UserBot:
         not_send = []
         async with self.client:
             for rec in recepients:
+                if self.stop_mailing:
+                    self.stop_mailing = False
+                    return send, not_send
                 try:
                     if rec[1] not in self.teachers:
                         await self.client.send_message(rec[1], text)
@@ -117,6 +122,9 @@ class UserBot:
         not_send = []
         async with self.client:
             for rec in recepients:
+                if self.stop_remaining:
+                    self.stop_remaining = False
+                    return send, not_send
                 user_id = db.get_user_id_by_phone(rec[3])
                 try:
                     if user_id not in (None, [], ()):
