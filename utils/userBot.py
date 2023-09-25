@@ -137,7 +137,7 @@ class UserBot:
                     not_send.append(rec)
                 finally:
                     counter += 1
-                    await asyncio.sleep(200)
+                    await asyncio.sleep(20)
                 # if counter <= 10:
                 # else:
                 #     await asyncio.sleep(60)
