@@ -205,7 +205,7 @@ async def remaining(callback: types.CallbackQuery):
                     file.write(f"{r[:7]}")
                     not_send_text += str(r)+"\n"
             with open("mailing.txt", "rb") as file:
-                await callback.message.answer_document(file, caption="Не доставлено\n"+not_send_text)
+                await callback.message.answer_document(file, caption="Не доставлено\n")
             os.system("rm mailing.txt")
         await callback.message.answer(f"Доставлено ({len(res[0])} из {amount_mail_users})\n")
     except Exception as ex:
