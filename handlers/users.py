@@ -156,9 +156,6 @@ async def wait_meil_text(message: types.Message):
     main_text = message.html_text
     markup = await kb.back_kb()
     message.entities
-    if message.entities:
-        
-        
     await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}", reply_markup=markup)
 
 
