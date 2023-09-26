@@ -111,7 +111,7 @@ async def start_mail(callback: types.CallbackQuery, state: FSMContext, callback_
     for _ in groups:
         amount_mail_users += _[3]
     for g in groups:
-        groups_text += f"{counter}{g[0]}\n"
+        groups_text += f"{counter}. {g[0]}\n"
         counter += 1
 
     try:
