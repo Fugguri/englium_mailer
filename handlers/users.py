@@ -152,9 +152,13 @@ async def wait_meil_text(message: types.Message):
     kb: Keyboards = ctx_data.get()['keyboards']
 
     global main_text
-    main_text = message.text
+    global entities
+    main_text = message.html_text
     markup = await kb.back_kb()
-
+    message.entities
+    if message.entities:
+        
+        
     await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}", reply_markup=markup)
 
 
@@ -208,6 +212,10 @@ async def remain_all(callback: types.CallbackQuery, state: FSMContext):
         await callback.message.edit_text("Сначала введите текст рассылки", reply_markup=markup)
         return
     await callback.message.answer("Отправлять сообщения при повторе номера?", reply_markup=markup)
+
+
+async def answer(message: types.Message):
+    await message.answer(str(message))
 
 
 async def remaining(callback: types.CallbackQuery, state: FSMContext, callback_data: dict):
@@ -281,3 +289,4 @@ def register_user_handlers(dp: Dispatcher, cfg: Config, kb: Keyboards, db: Datab
     dp.register_callback_query_handler(
         mail_text, lambda c: c.data == "mail_text", state="*")
     dp.register_message_handler(wait_meil_text, state="wait_mail_text")
+    # dp.register_message_handler(answer)

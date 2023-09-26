@@ -81,7 +81,7 @@ class UserBot:
                     return send, not_send
                 try:
                     if rec[1] not in self.teachers:
-                        await self.client.send_message(rec[1], text)
+                        await self.client.send_message(rec[1], text, parse_mode="HTML")
                         send.append(rec)
                 except telethon.errors.FloodWaitError as ex:
                     await asyncio.sleep(ex.value)
@@ -128,7 +128,7 @@ class UserBot:
                 user_id = db.get_user_id_by_phone(rec[3])
                 try:
                     if user_id not in (None, [], ()):
-                        await self.client.send_message(user_id[0], text)
+                        await self.client.send_message(user_id[0], text, parse_mode="HTML")
                         send.append(rec)
                     else:
                         not_send.append(rec)
