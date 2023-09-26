@@ -24,10 +24,7 @@ class GoogleSheest():
         worksheet = self.sh.get_worksheet(0)
         result = []
         cells = worksheet.get_values()
-
         for cell in cells:
-
             if cell[6].lower() == "да":
                 result.append(cell)
-
         return result

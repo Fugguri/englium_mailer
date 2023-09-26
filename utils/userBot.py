@@ -61,12 +61,12 @@ class UserBot:
             return good_res
 
     async def get_members_from_chats(self, chats):
-        part = set()
+        part = []
         async with self.client:
             for chat in chats:
                 participants = await self.client.get_participants(chat[1])
                 for p in participants:
-                    part.add(
+                    part.append(
                         (p.username, p.id, f"{p.first_name} {p.last_name}", len(participants)))
         return part
 

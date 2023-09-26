@@ -41,7 +41,7 @@ async def select_group(callback: types.CallbackQuery, callback_data: dict):
     userbot = ctx_data.get()['user_bot']
     global selected_groups
 
-    text = "Выберите группы для рассылки\n"
+    text = "Выберите группы для рассылки.\nЕсли ошиблись в выборе выйдите в главное меню и начните заново!"
     if callback_data["id"] == "":
         global groups_list
         global all_groups
@@ -68,7 +68,18 @@ async def select_group(callback: types.CallbackQuery, callback_data: dict):
     await callback.message.answer(text, reply_markup=markup)
 
 
-async def start_mail(callback: types.CallbackQuery):
+async def mail_all(callback: types.CallbackQuery, state: FSMContext):
+    kb: Keyboards = ctx_data.get()['keyboards']
+    markup = await kb.is_all_mail()
+    global main_text
+    if not main_text:
+        markup = await kb.start_kb()
+        await callback.message.edit_text("Сначала введите текст рассылки", reply_markup=markup)
+        return
+    await callback.message.answer("Повторять отправку сообщений ?", reply_markup=markup)
+
+
+async def start_mail(callback: types.CallbackQuery, state: FSMContext, callback_data: dict):
     kb: Keyboards = ctx_data.get()['keyboards']
     markup = await kb.start_kb()
     user_bot: UserBot = ctx_data.get()['user_bot']
@@ -84,6 +95,16 @@ async def start_mail(callback: types.CallbackQuery):
     groups = selected_groups.values()
     recp = await user_bot.get_members_from_chats(groups)
 
+    await callback.message.delete()
+    if callback_data['all'] == "False":
+        numbers = []
+        re = []
+        for x in recp:
+            print(x)
+            if x[1] not in numbers:
+                numbers.append(x[1])
+                re.append(x)
+        recp = re
     groups_text = ""
     counter = 1
     amount_mail_users = 0
@@ -178,7 +199,18 @@ async def stop(callback: types.CallbackQuery):
         await callback.message.answer("Остановил",)
 
 
-async def remaining(callback: types.CallbackQuery):
+async def remain_all(callback: types.CallbackQuery, state: FSMContext):
+    kb: Keyboards = ctx_data.get()['keyboards']
+    markup = await kb.is_all()
+    global main_text
+    if not main_text:
+        markup = await kb.start_kb()
+        await callback.message.edit_text("Сначала введите текст рассылки", reply_markup=markup)
+        return
+    await callback.message.answer("Отправлять сообщения при повторе номера?", reply_markup=markup)
+
+
+async def remaining(callback: types.CallbackQuery, state: FSMContext, callback_data: dict):
     db: Database = ctx_data.get()['db']
     kb: Keyboards = ctx_data.get()['keyboards']
     user_bot: UserBot = ctx_data.get()['user_bot']
@@ -190,9 +222,16 @@ async def remaining(callback: types.CallbackQuery):
         await callback.message.edit_text("Нет отмеченных для рассылки контактов", reply_markup=markup)
         main_text = None
         return
-    if not main_text:
-        await callback.message.edit_text("Сначала введите текст рассылки", reply_markup=markup)
-        return
+
+    if callback_data['all'] == "False":
+        numbers = []
+        re = []
+        for x in res:
+            if x[3] not in numbers:
+                numbers.append(x[3])
+                re.append(x)
+        res = re
+
     amount_mail_users = len(res)
     mes = await callback.message.answer("Начинаю рассылку")
     try:
@@ -207,7 +246,7 @@ async def remaining(callback: types.CallbackQuery):
             with open("mailing.txt", "rb") as file:
                 await callback.message.answer_document(file, caption="Не доставлено\n")
             os.system("rm mailing.txt")
-        await callback.message.answer(f"Доставлено ({len(res[0])} из {amount_mail_users})\n")
+        await callback.message.answer(f"Доставлено ({len(senders[0])} из {amount_mail_users})\n")
     except Exception as ex:
         await callback.message.answer(f"Ошибка {ex}")
     finally:
@@ -217,19 +256,28 @@ async def remaining(callback: types.CallbackQuery):
 
 def register_user_handlers(dp: Dispatcher, cfg: Config, kb: Keyboards, db: Database):
     dp.register_message_handler(start, commands=["start"], state="*")
+
     dp.register_callback_query_handler(
         contacts, lambda c: c.data == "contacts", state="*")
+
     dp.register_callback_query_handler(
-        remaining, lambda c: c.data == "remainder", state="*")
+        remain_all, lambda c: c.data == "remainder", state="*")
+    dp.register_callback_query_handler(
+        mail_all, lambda c: c.data == "mail", state="*")
+
+    dp.register_callback_query_handler(
+        remaining, kb.remain_cd.filter(), state="*")
+    dp.register_callback_query_handler(
+        start_mail, kb.mail_cd.filter(), state="*")
 
     dp.register_callback_query_handler(start, kb.back_cd.filter(), state="*")
 
     dp.register_callback_query_handler(
         select_group, kb.select_group.filter(), state="*")
-    dp.register_callback_query_handler(
-        start_mail, lambda c: c.data == "start", state="*")
+
     dp.register_callback_query_handler(
         stop, lambda c: c.data == "stop", state="*")
+
     dp.register_callback_query_handler(
         mail_text, lambda c: c.data == "mail_text", state="*")
     dp.register_message_handler(wait_meil_text, state="wait_mail_text")
