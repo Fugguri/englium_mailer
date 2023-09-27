@@ -158,14 +158,13 @@ async def wait_meil_text(message: types.Message):
     main_text = message.html_text
     markup = await kb.back_kb()
     if message.entities:
-        entities= []
+        entities = []
         for ent in message.entities:
             en = telethon.types.MessageEntityCustomEmoji(
                 ent.offset, ent.length, ent.custom_emoji_id)
             entities.append(en)
         print(entities)
         await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}",
-                             entities=entities,
                              reply_markup=markup)
         async with user_bot.client:
             await user_bot.client.send_message("fugguri", message=main_text, parse_mode="HTML", formatting_entities=entities)
