@@ -160,16 +160,34 @@ async def wait_meil_text(message: types.Message):
     if message.entities:
         entities = []
         for ent in message.entities:
-            print(ent)
+
             if ent.type == "custom_emoji":
                 en = telethon.types.MessageEntityCustomEmoji(
                     int(ent.offset), int(ent.length), int(ent.custom_emoji_id))
             if ent.type == "bold":
-                en = telethon.types.TextBold(
-                    int(ent.offset), int(ent.length), int(ent.custom_emoji_id))
+                en = telethon.types.MessageEntityBold(
+                    int(ent.offset), int(ent.length))
+            if ent.type == "code":
+                en = telethon.types.MessageEntityCode(
+                    int(ent.offset), int(ent.length))
+            if ent.type == "italic":
+                en = telethon.types.MessageEntityItalic(
+                    int(ent.offset), int(ent.length))
+            if ent.type == "underline":
+                en = telethon.types.MessageEntityUnderline(
+                    int(ent.offset), int(ent.length))
+            if ent.type == "strikethrough":
+                en = telethon.types.MessageEntityStrike(
+                    int(ent.offset), int(ent.length))
+            if ent.type == "spoiler":
+                en = telethon.types.MessageEntitySpoiler(
+                    int(ent.offset), int(ent.length))
+            if ent.type == "text_link":
+                en = telethon.types.MessageEntityTextUrl(
+                    int(ent.offset), int(ent.length), ent.url)
 
             entities.append(en)
-        print(entities)
+
         await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}",
                              reply_markup=markup)
         async with user_bot.client:
