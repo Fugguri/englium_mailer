@@ -45,7 +45,6 @@ class UserBot:
             results = await client(telethon.functions.contacts.GetContactsRequest(
                 hash=-12398745604826
             ))
-            # print(results.to_dict())
             for key, values in results.to_dict().items():
                 if key == "users":
                     for value in values:
@@ -70,7 +69,7 @@ class UserBot:
                         (p.username, p.id, f"{p.first_name} {p.last_name}", len(participants)))
         return part
 
-    async def start_mailing(self, recepients, text=None):
+    async def start_mailing(self, recepients, text=None, entities=None):
         counter = 0
         send = []
         not_send = []
@@ -81,13 +80,13 @@ class UserBot:
                     return send, not_send
                 try:
                     if rec[1] not in self.teachers:
-                        await self.client.send_message(rec[1], text, parse_mode="HTML")
+                        await self.client.send_message(rec[1], text, formatting_entities=entities)
                         send.append(rec)
                 except telethon.errors.FloodWaitError as ex:
                     await asyncio.sleep(ex.value)
                     try:
                         if rec[1] not in self.teachers:
-                            await self.client.send_message(rec[1], text)
+                            await self.client.send_message(rec[1], text, formatting_entities=entities)
                             send.append(rec)
                     except Exception as ex:
                         print(ex)
@@ -116,7 +115,7 @@ class UserBot:
                 #         await asyncio.sleep(10)
         return send, not_send
 
-    async def remain(self, recepients, db, text):
+    async def remain(self, recepients, db, text, entities):
         counter = 0
         send = []
         not_send = []
@@ -128,7 +127,7 @@ class UserBot:
                 user_id = db.get_user_id_by_phone(rec[3])
                 try:
                     if user_id not in (None, [], ()):
-                        await self.client.send_message(user_id[0], text, parse_mode="HTML")
+                        await self.client.send_message(user_id[0], text, formatting_entities=entities)
                         send.append(rec)
                     else:
                         not_send.append(rec)
@@ -155,8 +154,3 @@ class UserBot:
                 #         counter = 0
                 #         await asyncio.sleep(10)
         return send, not_send
-
-
-if __name__ == "__main__":
-    cl = UserBot()
-    print(asyncio.run(cl.get_chat_id("+79167352614")))

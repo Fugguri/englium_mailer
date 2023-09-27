@@ -90,6 +90,7 @@ async def start_mail(callback: types.CallbackQuery, state: FSMContext, callback_
         await callback.message.edit_text("Сначала выберите группы для рассылки", reply_markup=markup)
         return
     global main_text
+    global entities
     if not main_text:
         await callback.message.edit_text("Сначала введите текст рассылки", reply_markup=markup)
         return
@@ -101,7 +102,6 @@ async def start_mail(callback: types.CallbackQuery, state: FSMContext, callback_
         numbers = []
         re = []
         for x in recp:
-            print(x)
             if x[1] not in numbers:
                 numbers.append(x[1])
                 re.append(x)
@@ -118,7 +118,7 @@ async def start_mail(callback: types.CallbackQuery, state: FSMContext, callback_
     try:
         user_bot.stop_mailing = False
         mes = await callback.message.answer(f"Начинаю рассылку по группам:\n{groups_text}Текст рассылки:{main_text}")
-        res = await user_bot.start_mailing(recp, main_text)
+        res = await user_bot.start_mailing(recp, main_text, entities)
         text = f"Не доставлено ({len(res[0])} из {amount_mail_users}) :\n"
 
         if len(res[1]) != 0:
@@ -139,6 +139,7 @@ async def start_mail(callback: types.CallbackQuery, state: FSMContext, callback_
         groups_list = None
         all_groups = None
         main_text = None
+        entities = None
 
 
 async def mail_text(callback: types.CallbackQuery, state: FSMContext):
@@ -192,8 +193,8 @@ async def wait_meil_text(message: types.Message):
 
         await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}",
                              reply_markup=markup)
-        async with user_bot.client:
-            await user_bot.client.send_message("fugguri", message=main_text, formatting_entities=None)
+        # async with user_bot.client:
+        #     await user_bot.client.send_message("fugguri", message=main_text, formatting_entities=entities)
         return
     await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}", reply_markup=markup)
 
@@ -262,6 +263,7 @@ async def remaining(callback: types.CallbackQuery, state: FSMContext, callback_d
     res = google_sheets.collect_data()
     markup = await kb.start_kb()
     global main_text
+    global entities
     if res == []:
         await callback.message.edit_text("Нет отмеченных для рассылки контактов", reply_markup=markup)
         main_text = None
@@ -280,7 +282,7 @@ async def remaining(callback: types.CallbackQuery, state: FSMContext, callback_d
     mes = await callback.message.answer("Начинаю рассылку")
     try:
         user_bot.stop_remaining = False
-        senders = await user_bot.remain(res, db, main_text)
+        senders = await user_bot.remain(res, db, main_text, entities)
         if len(senders[1]) != 0:
             not_send_text = ""
             with open("mailing.txt", "w") as file:
@@ -295,6 +297,7 @@ async def remaining(callback: types.CallbackQuery, state: FSMContext, callback_d
         await callback.message.answer(f"Ошибка {ex}")
     finally:
         main_text = None
+        entities = None
         await mes.delete()
 
 
