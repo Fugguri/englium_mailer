@@ -158,7 +158,7 @@ async def wait_meil_text(message: types.Message):
     main_text = message.html_text
     markup = await kb.back_kb()
     if message.entities:
-        entities: list[telethon.types.TypeMessageEntity] = []
+        entities = []
         for ent in message.entities:
             en = telethon.types.MessageEntityCustomEmoji(
                 ent.offset, ent.length, ent.custom_emoji_id)
