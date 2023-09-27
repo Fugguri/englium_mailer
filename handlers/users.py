@@ -185,7 +185,9 @@ async def wait_meil_text(message: types.Message):
             if ent.type == "text_link":
                 en = telethon.types.MessageEntityTextUrl(
                     int(ent.offset), int(ent.length), ent.url)
-
+            if ent.type == "mention":
+                en = telethon.types.MessageEntityMention(
+                    int(ent.offset), int(ent.length))
             entities.append(en)
 
         await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}",
