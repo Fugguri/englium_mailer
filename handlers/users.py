@@ -106,6 +106,7 @@ async def start_mail(callback: types.CallbackQuery, state: FSMContext, callback_
                 numbers.append(x[1])
                 re.append(x)
         recp = re
+    print(recp)
     groups_text = ""
     counter = 1
     amount_mail_users = 0
@@ -193,8 +194,8 @@ async def wait_meil_text(message: types.Message):
 
         await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}",
                              reply_markup=markup)
-        # async with user_bot.client:
-        #     await user_bot.client.send_message("fugguri", message=main_text, formatting_entities=entities)
+        async with user_bot.client:
+            await user_bot.client.send_message("fugguri", message=main_text, formatting_entities=entities)
         return
     await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}", reply_markup=markup)
 
