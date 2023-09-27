@@ -160,11 +160,14 @@ async def wait_meil_text(message: types.Message):
     if message.entities:
         entities = []
         for ent in message.entities:
-            print(ent.type)
-            if ent.type == "":
-                pass
-            en = telethon.types.MessageEntityCustomEmoji(
-                int(ent.offset), int(ent.length), int(ent.custom_emoji_id))
+            print(ent)
+            if ent.type == "custom_emoji":
+                en = telethon.types.MessageEntityCustomEmoji(
+                    int(ent.offset), int(ent.length), int(ent.custom_emoji_id))
+            if ent.type == "bold":
+                en = telethon.types.TextBold(
+                    int(ent.offset), int(ent.length), int(ent.custom_emoji_id))
+
             entities.append(en)
         print(entities)
         await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}",
