@@ -161,7 +161,7 @@ async def wait_meil_text(message: types.Message):
         entities = []
         for ent in message.entities:
             entities.append(
-                telethon.types.MessageEntityCustomEmoji(**ent.__dict__))
+                telethon.types.MessageEntityCustomEmoji(ent.offset, ent.length, ent.custom_emoji_id))
         print(entities)
         await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}",
                              entities=entities,
