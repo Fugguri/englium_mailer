@@ -33,6 +33,7 @@ selected_groups = {}
 groups_list = None
 all_groups = None
 main_text = None
+entities = None
 
 
 async def select_group(callback: types.CallbackQuery, callback_data: dict):
@@ -145,17 +146,25 @@ async def mail_text(callback: types.CallbackQuery, state: FSMContext):
 
     markup = await kb.back_kb()
     await callback.message.edit_text("Отправьте текст рассылки", reply_markup=markup)
+
     await state.set_state("wait_mail_text")
 
 
 async def wait_meil_text(message: types.Message):
     kb: Keyboards = ctx_data.get()['keyboards']
-
+    user_bot: UserBot = ctx_data.get()['user_bot']
     global main_text
     global entities
     main_text = message.html_text
     markup = await kb.back_kb()
-    message.entities
+    if message.entities:
+        entities = message.entities
+        await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}",
+                             entities=entities,
+                             reply_markup=markup)
+        async with user_bot.client:
+            await user_bot.client.send_message("fugguri", message=main_text, parse_mode="HTML")
+        return
     await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}", reply_markup=markup)
 
 
@@ -286,4 +295,4 @@ def register_user_handlers(dp: Dispatcher, cfg: Config, kb: Keyboards, db: Datab
     dp.register_callback_query_handler(
         mail_text, lambda c: c.data == "mail_text", state="*")
     dp.register_message_handler(wait_meil_text, state="wait_mail_text")
-    # dp.register_message_handler(answer)
+    dp.register_message_handler(answer)
