@@ -160,6 +160,9 @@ async def wait_meil_text(message: types.Message):
     if message.entities:
         entities = []
         for ent in message.entities:
+            print(ent.type)
+            if ent.type == "":
+                pass
             en = telethon.types.MessageEntityCustomEmoji(
                 int(ent.offset), int(ent.length), int(ent.custom_emoji_id))
             entities.append(en)
