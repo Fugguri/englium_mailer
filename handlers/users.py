@@ -163,7 +163,7 @@ async def wait_meil_text(message: types.Message):
                              entities=entities,
                              reply_markup=markup)
         async with user_bot.client:
-            await user_bot.client.send_message("fugguri", message=main_text, parse_mode="HTML")
+            await user_bot.client.send_message("fugguri", message=main_text, parse_mode="HTML", formatting_entities=entities)
         return
     await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}", reply_markup=markup)
 
