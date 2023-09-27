@@ -156,7 +156,7 @@ async def wait_meil_text(message: types.Message):
     user_bot: UserBot = ctx_data.get()['user_bot']
     global main_text
     global entities
-    main_text = message.text
+    main_text = message.html_text
     markup = await kb.back_kb()
     if message.entities:
         entities = []
