@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram import Dispatcher
 from aiogram.dispatcher.handler import ctx_data
 from aiogram.dispatcher import FSMContext
-
+import telethon
 from utils import *
 from config import Config
 from db import Database
@@ -158,7 +158,11 @@ async def wait_meil_text(message: types.Message):
     main_text = message.html_text
     markup = await kb.back_kb()
     if message.entities:
-        entities = message.entities
+        entities = []
+        for ent in message.entities:
+            entities.append(
+                telethon.types.MessageEntityCustomEmoji(**ent.__dict__))
+        print(entities)
         await message.answer(f"Чтобы изменить текст рассылки отправьте его еще раз.\nЕсли все верно нажмите кнопку назад\n<b>Текст рассылки:</b>\n{main_text}",
                              entities=entities,
                              reply_markup=markup)
