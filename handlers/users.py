@@ -109,8 +109,6 @@ async def start_mail(callback: types.CallbackQuery, state: FSMContext, callback_
         return
     groups = selected_groups.values()
     recp = await user_bot.get_members_from_chats(groups)
-    print(recp)
-    return
     await callback.message.delete()
     if callback_data['all'] == "False":
         numbers = []

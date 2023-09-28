@@ -66,7 +66,7 @@ class UserBot:
                 participants = await self.client.get_participants(chat[1])
                 for p in participants:
                     part.append(
-                        (p.username, p.id, f"{p.first_name} {p.last_name}",  len(participants)))
+                        (p.username, p.id, f"{p.first_name} {p.last_name}", p,  len(participants)))
         return part
 
     async def start_mailing(self, recepients, text=None, entities=None):
