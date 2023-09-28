@@ -128,9 +128,9 @@ class UserBot:
                 try:
                     if user_id not in (None, [], ()):
                         await self.client.send_message(user_id[0], text, formatting_entities=entities)
-                        send.append(rec)
+                        send.append(rec[:7])
                     else:
-                        not_send.append(rec)
+                        not_send.append(rec[2], user_id, rec[3], rec[5])
                 except Exception as ex:
                     print(ex)
                     not_send.append(rec)
@@ -153,4 +153,24 @@ class UserBot:
                 #     finally:
                 #         counter = 0
                 #         await asyncio.sleep(10)
+        return send, not_send
+
+    async def from_file(self, recepients, db, text, entities):
+        counter = 0
+        send = []
+        not_send = []
+        async with self.client:
+            for rec in recepients:
+                if self.stop_remaining:
+                    self.stop_remaining = False
+                    return send, not_send
+                try:
+                    user = await self.client.get_entity(rec[1])
+                    await self.client.send_message(user, text, formatting_entities=entities)
+                    send.append(rec)
+                except Exception as ex:
+                    not_send.append(rec)
+                finally:
+                    counter += 1
+                    await asyncio.sleep(20)
         return send, not_send

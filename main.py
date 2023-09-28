@@ -8,7 +8,7 @@ from db.sqlite_connection import Database
 from config import load_config
 from keyboards.keyboards import Keyboards
 from handlers.users import register_user_handlers
-from handlers.admin import register_admin_handlers
+
 from handlers.users import user_active_clients
 
 from utils.userBot import UserBot
@@ -28,7 +28,7 @@ async def register_all_middlewares(dp, config, keyboards, db, user_bot):
 
 def register_all_handlers(dp, config, keyboards, db):
     register_user_handlers(dp, config, keyboards, db)
-    register_admin_handlers(dp, config, keyboards, db)
+    # register_admin_handlers(dp, config, keyboards, db)
 
     db.cbdt()
 

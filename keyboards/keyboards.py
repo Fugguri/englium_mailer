@@ -29,6 +29,8 @@ class Keyboards:
         kb.add(InlineKeyboardButton(
             text="Начать рассылку(гугл таблицы)", callback_data="remainder"))
         kb.add(InlineKeyboardButton(
+            text="Csv файл", callback_data="file"))
+        kb.add(InlineKeyboardButton(
             text="Остановить рассылки", callback_data="stop"))
 
         return kb

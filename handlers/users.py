@@ -1,3 +1,4 @@
+import csv
 from aiogram import types
 from aiogram import Dispatcher
 from aiogram.dispatcher.handler import ctx_data
@@ -80,6 +81,18 @@ async def mail_all(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.answer("Повторять отправку сообщений ?", reply_markup=markup)
 
 
+async def filed(callback: types.CallbackQuery, state: FSMContext):
+    kb: Keyboards = ctx_data.get()['keyboards']
+    # global main_text
+    # if not main_text:
+    #     markup = await kb.start_kb()
+    #     await callback.message.edit_text("Сначала введите текст рассылки", reply_markup=markup)
+    #     return
+    markup = await kb.back_kb()
+    await state.set_state("wait_fail")
+    await callback.message.answer("Ожидаю файл", reply_markup=markup)
+
+
 async def start_mail(callback: types.CallbackQuery, state: FSMContext, callback_data: dict):
     kb: Keyboards = ctx_data.get()['keyboards']
     markup = await kb.start_kb()
@@ -106,7 +119,6 @@ async def start_mail(callback: types.CallbackQuery, state: FSMContext, callback_
                 numbers.append(x[1])
                 re.append(x)
         recp = re
-    print(recp)
     groups_text = ""
     counter = 1
     amount_mail_users = 0
@@ -123,11 +135,10 @@ async def start_mail(callback: types.CallbackQuery, state: FSMContext, callback_
         text = f"Не доставлено ({len(res[0])} из {amount_mail_users}) :\n"
 
         if len(res[1]) != 0:
-            with open("mailing.txt", "w") as file:
-                for r in res[1]:
-                    file.write(f"{r}")
-
-            with open("mailing.txt", "rb") as file:
+            with open('file.csv', 'w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerows(res[1])
+            with open('file.csv', "rb") as file:
                 await callback.message.answer_document(file, caption=text)
             os.system("rm mailing.txt")
         else:
@@ -252,8 +263,45 @@ async def remain_all(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.answer("Отправлять сообщения при повторе номера?", reply_markup=markup)
 
 
-async def answer(message: types.Message):
-    await message.answer(str(message))
+# async def answer(message: types.Message):
+#     await message.answer(str(message))
+
+async def send_from_file(message: types.Message):
+    db: Database = ctx_data.get()['db']
+    kb: Keyboards = ctx_data.get()['keyboards']
+    user_bot: UserBot = ctx_data.get()['user_bot']
+    global main_text
+    global entities
+
+    if message.document:
+        await message.document.download("docks/csvfile.csv")
+        data = None
+        with open('docks/csvfile.csv', 'r', newline='') as f:
+            data = csv.reader(f)
+            mes = await message.answer("Начинаю рассылку")
+            user_bot.stop_remaining = False
+            senders = await user_bot.from_file(data, db, main_text, entities)
+            if len(senders[1]) != 0:
+                with open('file.csv', 'w', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerows(senders[1])
+                with open('file.csv', "rb") as file:
+                    await message.answer_document(file, caption="Не доставлено\n")
+        await message.answer(f"Доставлено ({len(senders[0])} из {len(data)})\n")
+        try:
+            pass
+        except Exception as ex:
+            await message.answer(f"Ошибка {ex}")
+        finally:
+            main_text = None
+            entities = None
+            await mes.delete()
+            os.system("rm mailing.txt")
+            os.system("rm docks/csvfile.csv")
+
+    else:
+        markup = await kb.back_kb()
+        await message.answer("Это не файл", reply_markup=markup)
 
 
 async def remaining(callback: types.CallbackQuery, state: FSMContext, callback_data: dict):
@@ -285,12 +333,11 @@ async def remaining(callback: types.CallbackQuery, state: FSMContext, callback_d
         user_bot.stop_remaining = False
         senders = await user_bot.remain(res, db, main_text, entities)
         if len(senders[1]) != 0:
-            not_send_text = ""
-            with open("mailing.txt", "w") as file:
-                for r in senders[1]:
-                    file.write(f"{r[:7]}")
-                    not_send_text += str(r)+"\n"
-            with open("mailing.txt", "rb") as file:
+            with open('file.csv', 'w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerows(senders[1])
+
+            with open('file.csv', "rb") as file:
                 await callback.message.answer_document(file, caption="Не доставлено\n")
             os.system("rm mailing.txt")
         await callback.message.answer(f"Доставлено ({len(senders[0])} из {amount_mail_users})\n")
@@ -304,6 +351,8 @@ async def remaining(callback: types.CallbackQuery, state: FSMContext, callback_d
 
 def register_user_handlers(dp: Dispatcher, cfg: Config, kb: Keyboards, db: Database):
     dp.register_message_handler(start, commands=["start"], state="*")
+    dp.register_message_handler(send_from_file, content_types=[
+                                types.ContentType.DOCUMENT, types.ContentType.TEXT], state="wait_fail")
 
     dp.register_callback_query_handler(
         contacts, lambda c: c.data == "contacts", state="*")
@@ -325,8 +374,9 @@ def register_user_handlers(dp: Dispatcher, cfg: Config, kb: Keyboards, db: Datab
 
     dp.register_callback_query_handler(
         stop, lambda c: c.data == "stop", state="*")
+    dp.register_callback_query_handler(
+        filed, lambda c: c.data == "file", state="*")
 
     dp.register_callback_query_handler(
         mail_text, lambda c: c.data == "mail_text", state="*")
     dp.register_message_handler(wait_meil_text, state="wait_mail_text")
-    dp.register_message_handler(answer)
