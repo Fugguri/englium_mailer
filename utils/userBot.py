@@ -65,8 +65,9 @@ class UserBot:
             for chat in chats:
                 participants = await self.client.get_participants(chat[1])
                 for p in participants:
+                    print(p)
                     part.append(
-                        (p.username, p.id, f"{p.first_name} {p.last_name}", len(participants)))
+                        (p.username, p.id, f"{p.first_name} {p.last_name}", p, len(participants)))
         return part
 
     async def start_mailing(self, recepients, text=None, entities=None):
@@ -80,7 +81,7 @@ class UserBot:
                     return send, not_send
                 try:
                     if rec[1] not in self.teachers:
-                        await self.client.send_message(rec[1], text, formatting_entities=entities)
+                        await self.client.send_message(rec[3], text, formatting_entities=entities)
                         send.append(rec)
                 except telethon.errors.FloodWaitError as ex:
                     await asyncio.sleep(ex.value)
@@ -165,8 +166,7 @@ class UserBot:
                     self.stop_remaining = False
                     return send, not_send
                 try:
-                    user = await self.client.get_entity(rec[1])
-                    await self.client.send_message(user, text, formatting_entities=entities)
+                    await self.client.send_message(rec[1], text, formatting_entities=entities)
                     send.append(rec)
                 except Exception as ex:
                     print(ex)
