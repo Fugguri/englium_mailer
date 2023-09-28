@@ -65,7 +65,6 @@ class UserBot:
             for chat in chats:
                 participants = await self.client.get_participants(chat[1])
                 for p in participants:
-                    print(p)
                     part.append(
                         (p.username, p.id, f"{p.first_name} {p.last_name}",  len(participants)))
         return part
