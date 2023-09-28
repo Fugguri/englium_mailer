@@ -169,6 +169,7 @@ class UserBot:
                     await self.client.send_message(user, text, formatting_entities=entities)
                     send.append(rec)
                 except Exception as ex:
+                    print(ex)
                     not_send.append(rec)
                 finally:
                     counter += 1
