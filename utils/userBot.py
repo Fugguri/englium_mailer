@@ -67,7 +67,7 @@ class UserBot:
                 for p in participants:
                     print(p)
                     part.append(
-                        (p.username, p.id, f"{p.first_name} {p.last_name}", p, len(participants)))
+                        (p.username, p.id, f"{p.first_name} {p.last_name}",  len(participants)))
         return part
 
     async def start_mailing(self, recepients, text=None, entities=None):
