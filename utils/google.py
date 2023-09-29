@@ -25,7 +25,7 @@ class GoogleSheest():
         result = []
         cells = worksheet.get_values()
         for cell in cells:
-            if cell[4].lower() == "да":
+            if cell[6].lower() == "да":
                 result.append(cell)
         print(result)
         return result
