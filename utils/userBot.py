@@ -128,12 +128,12 @@ class UserBot:
                 try:
                     if user_id not in (None, [], ()):
                         await self.client.send_message(user_id[0], text, formatting_entities=entities)
-                        send.append(rec[:7])
+                        send.append([rec[2], user_id, rec[3], rec[5]])
                     else:
-                        not_send.append(rec[2], user_id, rec[3], rec[5])
+                        not_send.append([rec[2], user_id, rec[3], rec[5]])
                 except Exception as ex:
                     print(ex)
-                    not_send.append(rec)
+                    not_send.append([rec[2], user_id, rec[3], rec[5]])
                 finally:
                     counter += 1
                     await asyncio.sleep(20)

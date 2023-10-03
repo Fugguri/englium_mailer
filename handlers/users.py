@@ -83,11 +83,11 @@ async def mail_all(callback: types.CallbackQuery, state: FSMContext):
 
 async def filed(callback: types.CallbackQuery, state: FSMContext):
     kb: Keyboards = ctx_data.get()['keyboards']
-    # global main_text
-    # if not main_text:
-    #     markup = await kb.start_kb()
-    #     await callback.message.edit_text("Сначала введите текст рассылки", reply_markup=markup)
-    #     return
+    global main_text
+    if not main_text:
+        markup = await kb.start_kb()
+        await callback.message.edit_text("Сначала введите текст рассылки", reply_markup=markup)
+        return
     markup = await kb.back_kb()
     await state.set_state("wait_fail")
     await callback.message.answer("Ожидаю файл", reply_markup=markup)
