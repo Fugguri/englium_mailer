@@ -139,7 +139,6 @@ async def start_mail(callback: types.CallbackQuery, state: FSMContext, callback_
                 writer.writerows(res[1])
             with open('file.csv', "rb") as file:
                 await callback.message.answer_document(file, caption=text)
-            os.system("rm mailing.txt")
         else:
             await callback.message.answer(f"Доставлено ({len(res[0])} из {amount_mail_users})\nГруппы для рассылки:\n{groups_text}")
     except Exception as ex:
