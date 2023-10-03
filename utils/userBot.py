@@ -82,6 +82,7 @@ class UserBot:
                     if rec[1] not in self.teachers:
                         await self.client.send_message(rec[3], text, formatting_entities=entities)
                         send.append(rec)
+                    
                 except telethon.errors.FloodWaitError as ex:
                     await asyncio.sleep(ex.value)
                     try:
@@ -133,7 +134,7 @@ class UserBot:
                         not_send.append([rec[2], user_id, rec[3], rec[5]])
                 except Exception as ex:
                     print(ex)
-                    not_send.append([rec[2], user_id, rec[3], rec[5]])
+                    not_send.append([rec[2], user_id, rec[3], rec[5], str(ex)])
                 finally:
                     counter += 1
                     await asyncio.sleep(20)
